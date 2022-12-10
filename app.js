@@ -4,6 +4,10 @@ const mongoose = require("mongoose");
 
 const app = express();
 
+app.use((req, res) => {
+  res.json({ message: "Votre requête a bien été reçue !" });
+});
+
 mongoose
   .connect(
     "mongodb+srv://marza:marzamarza@cluster0.zp9vkju.mongodb.net/?retryWrites=true&w=majority",
