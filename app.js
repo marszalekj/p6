@@ -1,15 +1,19 @@
+// importation
 const express = require("express");
 
 const mongoose = require("mongoose");
 
+const path = require("path");
+
+const dotenv = require("dotenv");
+// routes
 const userRoutes = require("./routes/user");
 
 const sauceRoutes = require("./routes/sauce");
-
-const path = require("path");
-
+// demarage de l'app
 const app = express();
 
+// header permettant d'eviter les erreurs CORS
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -32,7 +36,7 @@ mongoose
   .catch(() => console.log("Connexion à MongoDB échouée !"));
 
 app.use(express.json());
-
+// settings des routes
 app.use("/api/auth", userRoutes);
 
 app.use("/api/sauces", sauceRoutes);

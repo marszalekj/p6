@@ -1,7 +1,9 @@
 const Sauce = require("../models/Sauce");
 
+// Importation du package fs pour gerer les fichiers
 const fs = require("fs");
 
+// fonction de creation de la sauce
 exports.createSauce = (req, res, next) => {
   const sauceObject = JSON.parse(req.body.sauce);
   delete sauceObject._id;
@@ -27,6 +29,7 @@ exports.createSauce = (req, res, next) => {
     });
 };
 
+// fonction d'affichage d'une sauce
 exports.getSauceById = (req, res, next) => {
   Sauce.findOne({
     _id: req.params.id,
@@ -41,6 +44,7 @@ exports.getSauceById = (req, res, next) => {
     });
 };
 
+// fonction de modification de la sauce
 exports.modifySauce = (req, res, next) => {
   const sauceObject = req.file
     ? {
@@ -57,6 +61,7 @@ exports.modifySauce = (req, res, next) => {
       if (sauce.userId != req.auth.userId) {
         res.status(401).json({ message: "Not authorized" });
       } else {
+        // Suppression de l'ancienne inage lors de la modification
         const filename = sauce.imageUrl.split("/images/")[1];
         fs.unlink(`images/${filename}`, () => {
           Sauce.updateOne(
@@ -73,6 +78,7 @@ exports.modifySauce = (req, res, next) => {
     });
 };
 
+// fonction de suppression de la sauce
 exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
     .then((sauce) => {
@@ -94,6 +100,7 @@ exports.deleteSauce = (req, res, next) => {
     });
 };
 
+// fonction d'affichage de toutes les sauces
 exports.getSauces = (req, res, next) => {
   Sauce.find()
     .then((sauces) => {
@@ -105,6 +112,8 @@ exports.getSauces = (req, res, next) => {
       });
     });
 };
+
+// fonction de like des sauces
 
 exports.likeSauce = (req, res, next) => {
   const liker = req.body.userId;

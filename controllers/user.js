@@ -4,25 +4,38 @@ const User = require("../models/User");
 
 const jwt = require("jsonwebtoken");
 
-//require("dotenv").config();
+require("dotenv").config();
 
+// fonction d'inscription
 exports.signup = (req, res, next) => {
-  bcrypt
-    .hash(req.body.password, 10)
-    .then((hash) => {
-      const user = new User({
-        email: req.body.email,
-        password: hash,
-      });
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+  if (passwordRegex.test(req.body.password)) {
+    bcrypt
+      .hash(req.body.password, 10)
+      .then((hash) => {
+        const user = new User({
+          email: req.body.email,
+          password: hash,
+        });
 
-      user
-        .save()
-        .then(() => res.status(201).json({ message: "Utilisateur créé !" }))
-        .catch((error) => res.status(400).json({ error }));
-    })
-    .catch((error) => res.status(500).json({ error }));
+        user
+          .save()
+          .then(() => res.status(201).json({ message: "Utilisateur créé !" }))
+          .catch((error) => res.status(400).json({ error }));
+      })
+      .catch((error) => res.status(500).json({ error }));
+  } else {
+    res.status(400).json({
+      message:
+        "Le mot de passe doit contenir au moins 8caractères, une lettre majuscule, une lettre minuscule et un chiffre",
+    });
+    alert(
+      "Le mot de passe doit contenir au moins 8caractères, une lettre majuscule, une lettre minuscule et un chiffre"
+    );
+  }
 };
 
+// fonction de login
 exports.login = (req, res, next) => {
   User.findOne({ email: req.body.email })
     .then((user) => {
@@ -37,9 +50,13 @@ exports.login = (req, res, next) => {
           }
           res.status(200).json({
             userId: user._id,
-            token: jwt.sign({ userId: user._id }, "RANDOM_TOKEN_SECRET", {
-              expiresIn: "24h",
-            }),
+            token: jwt.sign(
+              { userId: user._id },
+              process.env.RANDOM_TOKEN_SECRET,
+              {
+                expiresIn: "24h",
+              }
+            ),
           });
         })
         .catch((error) => res.status(500).json({ error }));
