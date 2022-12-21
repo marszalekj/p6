@@ -67,6 +67,7 @@ exports.modifySauce = (req, res, next) => {
         // Suppression de l'ancienne inage lors de la modification
         const filename = sauce.imageUrl.split("/images/")[1];
         fs.unlink(`images/${filename}`, () => {
+          // utilisation de la methode updateone
           Sauce.updateOne(
             { _id: req.params.id },
             { ...sauceObject, _id: req.params.id }
