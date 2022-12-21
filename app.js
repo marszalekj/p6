@@ -36,7 +36,7 @@ mongoose
   .catch(() => console.log("Connexion à MongoDB échouée !"));
 
 app.use(express.json());
-// settings des routes
+// import des routes
 app.use("/api/auth", userRoutes);
 
 app.use("/api/sauces", sauceRoutes);
